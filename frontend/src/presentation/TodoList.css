@@ -1,0 +1,19 @@
+.todo-list-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.todo-list-container h3 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.todo-list-container li {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.todo-list-container li:hover {
+  background-color: #f1f3f5;
+}

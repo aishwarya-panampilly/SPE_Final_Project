@@ -1,0 +1,17 @@
+.archive-list-container {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.archive-list-container h3 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.archive-list-container li {
+  background-color: #e9ecef;
+  border: none;
+  margin-bottom: 0.5rem;
+}

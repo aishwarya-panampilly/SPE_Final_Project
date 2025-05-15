@@ -1,0 +1,19 @@
+.add-task-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.add-task-container h3 {
+  font-weight: 600;
+  color: #343a40;
+}
+
+.add-task-container .form-control {
+  margin-bottom: 1rem;
+}
+
+.add-task-container button {
+  width: 100%;
+}
