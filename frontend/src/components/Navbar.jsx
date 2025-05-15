@@ -18,6 +18,9 @@ function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/add">Add Task</Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/calendar">Calendar</Link>
+            </li>
           </ul>
         </div>
       </div>

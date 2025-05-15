@@ -1,0 +1,17 @@
+.calendar-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-header h4 {
+  font-weight: 600;
+}
+
+.cell {
+  min-height: 80px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
