@@ -1,0 +1,13 @@
+.journal-container {
+  max-width: 700px;
+  margin: auto;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.entry {
+  cursor: pointer;
+}
+
