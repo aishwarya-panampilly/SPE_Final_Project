@@ -7,12 +7,33 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // For demo, you can store a token or simulate login logic
-    localStorage.setItem('authUser', username);
-    onLogin(username);
-    navigate('/todo');
+
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      const message = await response.text();
+
+      if (response.ok) {
+        localStorage.setItem('authUser', username);
+        onLogin(username);
+        alert(message);
+        navigate('/todo');
+      } else {
+        alert(`Login failed: ${message}`);
+      }
+
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An error occurred during login.");
+    }
   };
 
   return (

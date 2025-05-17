@@ -1,4 +1,4 @@
-    import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../presentation/Auth.css';
 
@@ -8,16 +8,40 @@ function Signup() {
   const [confirm, setConfirm] = useState('');
   const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
+
     if (password !== confirm) {
       alert("Passwords do not match");
       return;
     }
-    // Save fake user to localStorage (demo)
-    localStorage.setItem('authUser', username);
-    alert("Signed up! Please log in.");
-    navigate('/login');
+
+    try {
+      const response = await fetch('http://localhost:8080/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          confirmPassword: confirm
+        })
+      });
+
+      const message = await response.text();
+
+      if (response.ok) {
+        alert(message);
+        navigate('/login');
+      } else {
+        alert(`Signup failed: ${message}`);
+      }
+
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("An error occurred during signup.");
+    }
   };
 
   return (
