@@ -13,13 +13,17 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                dir('auth_service') {
+                    sh 'mvn clean package -DskipTests'
+                }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+                dir('auth_service') {
+                    sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+                }
             }
         }
 
