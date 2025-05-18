@@ -20,3 +20,8 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "500m"

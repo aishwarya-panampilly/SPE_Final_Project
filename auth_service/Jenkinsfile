@@ -10,23 +10,46 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/SPE_Final_Project/auth-service.git'
             }
         }
+
         stage('Build') {
             steps {
                 sh './mvnw clean package -DskipTests'
             }
         }
-        stage('Docker Build & Push') {
+
+        stage('Docker Build') {
             steps {
                 sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
                     sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
                 }
             }
         }
+
+        stage('Clean Docker Images') {
+            steps {
+                // Removes dangling and unused images
+                sh 'docker image prune -f'
+            }
+        }
+
         stage('Ansible Deploy') {
             steps {
-                sh 'ansible-playbook -i ansible/inventory ansible/deploy.yml --ask-vault-pass'
+                // This runs the playbook with Vault secrets and deploys to K8s
+                sh 'ansible-playbook -i ansible/inventory ansible/playbook.yml --ask-vault-pass'
+            }
+        }
+
+        stage('Log to ELK') {
+            steps {
+                echo 'Log shipping to ELK is handled via Filebeat or container log driver.'
+                // Optional: If you're using Filebeat or fluentd inside the container, logs will automatically go to Logstash
             }
         }
     }
