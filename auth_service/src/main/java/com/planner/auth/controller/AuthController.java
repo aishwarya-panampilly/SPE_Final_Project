@@ -11,7 +11,7 @@ import java.util.Map;
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*") // Allow cross-origin requests
 public class AuthController {
-//hello
+//hello again
     @Autowired
     private AuthService authService;
 
