@@ -46,7 +46,7 @@ pipeline {
         stage('Ansible Deploy') {
             steps {
                 // This runs the playbook with Vault secrets and deploys to K8s
-                sh 'ansible-playbook -i ansible/inventory ansible/deploy.yml --vault-password-file ~/.vault_pass.txt'
+                sh 'ansible-playbook -i ansible/inventory ansible/deploy.yml --vault-password-file /home/aishwarya-j-panampilly/SPE_Final_Project/vault_pass.txt'
             }
         }
 
