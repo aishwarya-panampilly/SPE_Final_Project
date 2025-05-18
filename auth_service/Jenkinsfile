@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
+        IMAGE_NAME = 'aishjp/auth-service'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/SPE_Final_Project/auth-service.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh './mvnw clean package -DskipTests'
+            }
+        }
+        stage('Docker Build & Push') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+                    sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
+                }
+            }
+        }
+        stage('Ansible Deploy') {
+            steps {
+                sh 'ansible-playbook -i ansible/inventory ansible/deploy.yml --ask-vault-pass'
+            }
+        }
+    }
+}

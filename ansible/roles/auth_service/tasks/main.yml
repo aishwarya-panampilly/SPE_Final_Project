@@ -1,0 +1,15 @@
+- name: Create Kubernetes deployment manifest
+  template:
+    src: deployment.yaml.j2
+    dest: ../../k8s/auth-deployment.yaml
+
+- name: Create Kubernetes service manifest
+  template:
+    src: service.yaml.j2
+    dest: ../../k8s/auth-service.yaml
+
+- name: Apply Kubernetes deployment
+  shell: kubectl apply -f ../../k8s/auth-deployment.yaml
+
+- name: Apply Kubernetes service
+  shell: kubectl apply -f ../../k8s/auth-service.yaml
