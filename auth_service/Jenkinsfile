@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('DockerHubCred')
         IMAGE_NAME = 'aishjp/auth-service'
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
     stages {
         stage('Checkout') {
