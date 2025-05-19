@@ -1,4 +1,6 @@
-- hosts: all
+- name: Deploy Auth Service to Kubernetes
+  hosts: localhost
+  connection: local
   vars_files:
     - vault/secrets.yml
   roles:

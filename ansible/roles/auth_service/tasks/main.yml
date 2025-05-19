@@ -1,23 +1,42 @@
-- name: Create Kubernetes deployment manifest
+- name: Login to DockerHub
+  community.docker.docker_login:
+    username: "{{ dockerhub_username }}"
+    password: "{{ dockerhub_password }}"
+
+- name: Debug build_number and env BUILD_NUMBER
+  debug:
+    msg: "build_number={{ build_number }} env BUILD_NUMBER={{ lookup('env', 'BUILD_NUMBER') }}"
+
+- name: Debug image tag
+  debug:
+    msg: "Pulling image: {{ dockerhub_username }}/{{ image_name }}:{{ build_number }}"
+
+- name: Pull latest Docker image
+  community.docker.docker_image:
+    name: "{{ dockerhub_username }}/{{ image_name }}"
+    tag: "latest"
+    source: pull
+
+- name: Generate Kubernetes deployment
   template:
     src: deployment.yaml.j2
-    dest: ../../k8s/auth-deployment.yaml
+    dest: ../k8s/{{ image_name }}-deployment.yaml
 
-- name: Create Kubernetes service manifest
+- name: Generate Kubernetes service
   template:
     src: service.yaml.j2
-    dest: ../../k8s/auth-service.yaml
+    dest: ../k8s/{{ image_name }}-service.yaml
 
-- name: Apply Kubernetes deployment
-  shell: kubectl apply -f ../../k8s/auth-deployment.yaml
-
-- name: Apply Kubernetes service
-  shell: kubectl apply -f ../../k8s/auth-service.yaml
-
-- name: Create Kubernetes HPA manifest
+- name: Generate Kubernetes HPA
   template:
-    src: auth-hpa.yaml.j2
-    dest: ../../k8s/auth-hpa.yaml
+    src: hpa.yaml.j2
+    dest: ../k8s/{{ image_name }}-hpa.yaml
 
-- name: Apply Kubernetes HPA
-  shell: kubectl apply -f ../../k8s/auth-hpa.yaml
+- name: Apply deployment
+  command: kubectl apply -f ../k8s/{{ image_name }}-deployment.yaml
+
+- name: Apply service
+  command: kubectl apply -f ../k8s/{{ image_name }}-service.yaml
+
+- name: Apply HPA
+  command: kubectl apply -f ../k8s/{{ image_name }}-hpa.yaml

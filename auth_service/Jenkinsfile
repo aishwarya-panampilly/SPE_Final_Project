@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'github-cred',url: 'https://github.com/aishwarya-panampilly/SPE_Final_Project.git'
+                git branch: 'main', credentialsId: 'github-cred', url: 'https://github.com/aishwarya-panampilly/SPE_Final_Project.git'
             }
         }
 
@@ -22,7 +22,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 dir('auth_service') {
-                    sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+                    sh 'docker build -t $IMAGE_NAME:latest .'
                 }
             }
         }
@@ -30,31 +30,35 @@ pipeline {
         stage('Docker Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DockerHubCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
-                    sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
+                    sh '''
+                        echo $PASSWORD | docker login -u $USERNAME --password-stdin
+                        docker push $IMAGE_NAME:latest
+                    '''
                 }
             }
         }
 
         stage('Clean Docker Images') {
             steps {
-                // Removes dangling and unused images
-                sh 'docker image prune -f'
+                // Remove all local images with the same repo name except `latest`
+                sh '''
+                    docker images --format "{{.Repository}}:{{.Tag}}" | grep "$IMAGE_NAME" | grep -v "latest" | xargs -r docker rmi -f || true
+                '''
             }
         }
 
         stage('Ansible Deploy') {
             steps {
-                // This runs the playbook with Vault secrets and deploys to K8s
-                sh 'ansible-playbook -i ansible/inventory ansible/deploy.yml \
-                      --vault-password-file /var/lib/jenkins/vault_pass.txt'
+                sh '''
+                    ansible-playbook -i ansible/inventory ansible/deploy.yml \
+                    --vault-password-file /var/lib/jenkins/vault_pass.txt
+                '''
             }
         }
 
         stage('Log to ELK') {
             steps {
                 echo 'Log shipping to ELK is handled via Filebeat or container log driver.'
-                // Optional: If you're using Filebeat or fluentd inside the container, logs will automatically go to Logstash
             }
         }
     }

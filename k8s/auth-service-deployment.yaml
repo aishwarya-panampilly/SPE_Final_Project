@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ image_name }}-deployment
+  name: auth-service-deployment
 spec:
   replicas: 2
   strategy:
@@ -11,17 +11,17 @@ spec:
       maxSurge: 1
   selector:
     matchLabels:
-      app: {{ image_name }}
+      app: auth-service
   template:
     metadata:
       labels:
-        app: {{ image_name }}
+        app: auth-service
     spec:
       containers:
-        - name: {{ image_name }}
-          image: {{ dockerhub_username }}/{{ image_name }}:latest
+        - name: auth-service
+          image: aishjp/auth-service:latest
           ports:
-            - containerPort: {{ container_port }}
+            - containerPort: 8082
           resources:
             requests:
               cpu: "100m"

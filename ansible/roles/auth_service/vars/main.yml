@@ -1,0 +1,3 @@
+image_name: "auth-service"
+build_number: "latest"
+container_port: 8082
