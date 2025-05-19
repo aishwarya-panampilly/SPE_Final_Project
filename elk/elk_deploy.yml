@@ -1,0 +1,29 @@
+---
+- name: Deploy ELK Stack using kubectl
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - name: Apply Elasticsearch Deployment
+      shell: kubectl apply -f ../elk/roles/elasticsearch/deployment.yaml
+
+    - name: Apply Elasticsearch Service
+      shell: kubectl apply -f ../elk/roles/elasticsearch/service.yaml
+
+    - name: Apply Logstash ConfigMap
+      shell: kubectl apply -f ../elk/roles/logstash/configmap.yaml
+
+    - name: Apply Logstash Deployment
+      shell: kubectl apply -f ../elk/roles/logstash/deployment.yaml
+
+    - name: Apply Logstash Service
+      shell: kubectl apply -f ../elk/roles/logstash/service.yaml
+
+    - name: Apply Kibana Deployment
+      shell: kubectl apply -f ../elk/roles/kibana/deployment.yaml
+
+    - name: Apply Kibana Service
+      shell: kubectl apply -f ../elk/roles/kibana/service.yaml
+
+    - name: Apply Filebeat resources
+      shell: kubectl apply -f ../elk/roles/filebeat/filebeat.yaml
