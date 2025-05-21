@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   startOfMonth,
   endOfMonth,
@@ -14,14 +14,19 @@ import {
 } from 'date-fns';
 import '../presentation/Calendar.css';
 
-function Calendar({ tasks }) {
+function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [tasks, setTasks] = useState([]);
 
-  // 🔹 Only keep tasks that have a due date and are not completed
-  const filteredTasks = tasks.filter(
-    (task) => task.dueDate && !task.completed
-  );
+  // 🔹 Fetch tasks with dueDate && not completed from backend
+  useEffect(() => {
+    fetch('http://localhost:8083/api/tasks/calendar')
+      .then(res => res.json())
+      .then(data => setTasks(data))
+      .catch(err => console.error('Failed to load tasks:', err));
+  }, []);
 
+  // 🔹 Render header with month navigation
   const renderHeader = () => (
     <div className="d-flex justify-content-between align-items-center mb-3 calendar-header">
       <button className="btn btn-outline-secondary" onClick={prevMonth}>←</button>
@@ -30,6 +35,7 @@ function Calendar({ tasks }) {
     </div>
   );
 
+  // 🔹 Render weekdays (Sun to Sat)
   const renderDays = () => {
     const days = [];
     const dateFormat = "EEE";
@@ -46,13 +52,14 @@ function Calendar({ tasks }) {
     return <div className="row border-bottom pb-2">{days}</div>;
   };
 
+  // 🔹 Render calendar cells with task badges
   const renderCells = () => {
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
     const endDate = endOfWeek(monthEnd);
-    const rows = [];
 
+    const rows = [];
     let days = [];
     let day = startDate;
 
@@ -60,7 +67,7 @@ function Calendar({ tasks }) {
       for (let i = 0; i < 7; i++) {
         const dayFormatted = format(day, "d");
 
-        const dayTasks = filteredTasks.filter(task =>
+        const dayTasks = tasks.filter(task =>
           isSameDay(parseISO(task.dueDate), day)
         );
 
@@ -101,4 +108,3 @@ function Calendar({ tasks }) {
 }
 
 export default Calendar;
-

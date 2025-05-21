@@ -2,22 +2,37 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../presentation/AddTaskForm.css';
 
-function AddTaskForm({ addTask }) {
+function AddTaskForm() {
   const [text, setText] = useState('');
   const [dueDate, setDueDate] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text) return;
+
     const newTask = {
-      id: Date.now(),
       text,
       dueDate,
-      archived: false,
     };
-    addTask(newTask);
-    navigate('/');
+
+    try {
+      const response = await fetch('http://localhost:8083/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTask),
+      });
+
+      if (response.ok) {
+        navigate('/');
+      } else {
+        console.error('Failed to create task');
+      }
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
   };
 
   return (
