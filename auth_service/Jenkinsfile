@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    options {
+            timestamps()
+            ansiColor('xterm')
+            logstash()  // 👈 this sends logs to Elasticsearch
+    }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('DockerHubCred')
         IMAGE_NAME = 'aishjp/auth-service'

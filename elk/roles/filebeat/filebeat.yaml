@@ -161,7 +161,7 @@ data:
     #password: ${ELASTICSEARCH_PASSWORD}
 
     output.logstash:
-      hosts: ["logstash:5044"]
+      hosts: ["logstash.default.svc.cluster.local:5044"]
 ---
 apiVersion: apps/v1
 kind: DaemonSet

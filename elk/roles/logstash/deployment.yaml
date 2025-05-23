@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: logstash
   namespace: default
+  labels:
+    app: logstash
 spec:
   replicas: 1
   selector:
@@ -13,15 +15,18 @@ spec:
       labels:
         app: logstash
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
       - name: logstash
         image: docker.elastic.co/logstash/logstash:8.12.0
+        args: ["-f", "/usr/share/logstash/pipeline/logstash.conf"]
         ports:
         - containerPort: 5044
         volumeMounts:
         - name: config-volume
           mountPath: /usr/share/logstash/pipeline/logstash.conf
           subPath: logstash.conf
+          readOnly: true
         resources:
           requests:
             memory: "512Mi"
@@ -33,3 +38,7 @@ spec:
       - name: config-volume
         configMap:
           name: logstash-config
+          # Optional: you can specify items explicitly, but here whole configmap is fine
+          # items:
+          # - key: logstash.conf
+          #   path: logstash.conf
