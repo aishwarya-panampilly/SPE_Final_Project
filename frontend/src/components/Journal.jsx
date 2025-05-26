@@ -43,22 +43,23 @@ function Journal() {
   };
 
   const handleDone = async () => {
-    try {
-      await fetch(`http://localhost:8084/api/journal/${formattedDate}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          date: formattedDate,
-          text: tempText,
-          mood: tempMood
-        }),
-      });
-      setEditing(false);
-      fetchEntry();
-    } catch (err) {
-      console.error("Error saving entry", err);
-    }
-  };
+  try {
+    await fetch(`http://localhost:8084/api/journal`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        date: formattedDate,
+        text: tempText,
+        mood: tempMood
+      }),
+    });
+    setEditing(false);
+    fetchEntry();
+  } catch (err) {
+    console.error("Error saving entry", err);
+  }
+};
+
 
   const handleDelete = async () => {
     try {
