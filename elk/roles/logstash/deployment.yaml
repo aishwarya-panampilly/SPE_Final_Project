@@ -38,7 +38,4 @@ spec:
       - name: config-volume
         configMap:
           name: logstash-config
-          # Optional: you can specify items explicitly, but here whole configmap is fine
-          # items:
-          # - key: logstash.conf
-          #   path: logstash.conf
+  
