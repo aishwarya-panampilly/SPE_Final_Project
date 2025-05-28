@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../presentation/AddTaskForm.css';
 
 function AddTaskForm() {
   const [text, setText] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const navigate = useNavigate();
+  const [successMsg, setSuccessMsg] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +25,9 @@ function AddTaskForm() {
       });
 
       if (response.ok) {
-        navigate('/');
+        setText('');
+        setDueDate('');
+        setSuccessMsg('Task added successfully!');
       } else {
         console.error('Failed to create task');
       }
@@ -60,6 +61,8 @@ function AddTaskForm() {
         </div>
         <button type="submit" className="btn btn-primary">Create Task</button>
       </form>
+
+      {successMsg && <div className="alert alert-success mt-3">{successMsg}</div>}
     </div>
   );
 }
